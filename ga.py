@@ -1,0 +1,64 @@
+import numpy as np
+
+from gridworld import GridWorld
+
+# hyperparameters
+POP_SIZE = 50
+N_GENERATIONS = 100
+LIFESPAN = 500  # steps per lifetime
+ALPHA = 0.1 # learning rate during life (0 for GA alone)
+EPSILON = 0.1
+TOURNAMENT_SIZE = 3
+MUTATION_RATE = 0.1  # per-gene probability
+MUTATION_SIGMA = 0.1 # std of gaussian noise
+INIT_SIGMA = 0.1  # std for random initial genomes
+
+
+def random_genome() -> np.ndarray:
+    """Small random weights, shape (GENOME_SIZE,). Gen 0 should know nothing useful."""
+    pass
+
+
+def evaluate(genome: np.ndarray, alpha: float, n_worlds: int = 1):
+    """
+    Fitness of one genome: total reward over a lifetime in a fresh randomized world.
+    We could optionally average over n_worlds worlds to reduce noise.
+
+    :return: (fitness, learned_genome) with learned_genome = weights at end of life
+    """
+    pass
+
+
+def select_parent(population: list, fitnesses: np.ndarray) -> np.ndarray:
+    """Tournament selection: sample TOURNAMENT_SIZE individuals, return the fittest's genome."""
+    pass
+
+
+def crossover(parent_a: np.ndarray, parent_b: np.ndarray) -> np.ndarray:
+    """Uniform crossover: each gene comes from parent_a or parent_b with 50/50 chance."""
+    pass
+
+
+def mutate(genome: np.ndarray) -> np.ndarray:
+    """Add gaussian noise to each gene with probability MUTATION_RATE. Returns a new array."""
+    pass
+
+
+def evolve(alpha: float) -> dict:
+    """
+    Run the GA for N_GENERATIONS and log everything the analysis needs.
+
+    Each generation:
+        1. evaluate every genome WITH learning (alpha) -> fitness, learned genome
+        2. evaluate every genome WITHOUT learning (alpha=0) -> innate fitness
+        3. log, then build the next population (selection -> crossover -> mutation, we 
+        optionally keep the best 1-2 unchanged = elitism)
+
+    :param alpha: learning rate during life. Run once with ALPHA and once with 0 for GA-only.
+    :return: log dict of numpy arrays, indexed by generation:
+        'genomes' (n_gen, pop, GENOME_SIZE) starting weights
+        'learned' (n_gen, pop, GENOME_SIZE) weights at end of life
+        'fitness' (n_gen, pop) lifetime reward
+        'innate_fitness' (n_gen, pop) reward with no learning
+    """
+    pass
