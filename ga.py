@@ -1,5 +1,5 @@
 import numpy as np
-
+from agent import *
 from gridworld import GridWorld
 
 # hyperparameters
@@ -12,23 +12,39 @@ TOURNAMENT_SIZE = 3
 MUTATION_RATE = 0.1  # per-gene probability
 MUTATION_SIGMA = 0.1 # std of gaussian noise
 INIT_SIGMA = 0.1  # std for random initial genomes
+SOME_RANDOM_SIZE_CHANGE_LATER = 5
 
 
 def random_genome() -> np.ndarray:
     """Small random weights, shape (GENOME_SIZE,). Gen 0 should know nothing useful."""
-    pass
-
+    genome = np.random.randn(GENOME_SIZE) * 0.1
+    return genome
 
 def evaluate(genome: np.ndarray, alpha: float, n_worlds: int = 1):
     """
     Fitness of one genome: total reward over a lifetime in a fresh randomized world.
-    We could optionally average over n_worlds worlds to reduce noise.
+    Optionally averaged over n_worlds worlds to reduce noise.
 
     :return: (fitness, learned_genome) with learned_genome = weights at end of life
     """
-    pass
+    total_fitness = 0.0
+    learned_genomes = []
 
+    for _ in range(n_worlds):
+        world = GridWorld(size=SOME_RANDOM_SIZE_CHANGE_LATER,
+                          state_includes_location=False,
+                          state_includes_sensory=True,
+                          randomize_each_trial=True)
 
+        # live() copies the genome internally, so the original is never modified
+        learned, reward = live(world, genome, LIFESPAN, alpha, EPSILON)
+
+        total_fitness += reward
+        learned_genomes.append(learned)
+
+    return total_fitness / n_worlds, np.mean(learned_genomes, axis=0)
+
+    
 def select_parent(population: list, fitnesses: np.ndarray) -> np.ndarray:
     """Tournament selection: sample TOURNAMENT_SIZE individuals, return the fittest's genome."""
     pass
