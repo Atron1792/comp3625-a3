@@ -7,7 +7,6 @@ so we can measure innate, pre-learning performance.
 import random
 
 import numpy as np
-
 from gridworld import GridWorld
 
 ACTIONS = ["up", "right", "down", "left"]
@@ -45,11 +44,12 @@ def feature_names() -> list:
 
 def genome_to_weights(genome: np.ndarray) -> dict:
     """Reshape a flat genome (GENOME_SIZE,) into {action: weight vector (N_FEATURES,)}."""
-    pass
+    return {a: genome[i * N_FEATURES:(i + 1) * N_FEATURES].copy()
+            for i, a in enumerate(ACTIONS)}
 
 def weights_to_genome(weights: dict) -> np.ndarray:
     """Inverse of genome_to_weights: flatten {action: vector} into one array in ACTIONS order."""
-    pass
+    return np.concatenate([weights[a] for a in ACTIONS])
 
 def live(world: GridWorld, genome: np.ndarray, n_steps: int, alpha: float, epsilon: float):
     """
@@ -61,4 +61,28 @@ def live(world: GridWorld, genome: np.ndarray, n_steps: int, alpha: float, epsil
     :param epsilon: exploration rate (keep it simple: fixed value, no schedule)
     :return: (final_weights as a flat array, total_reward over the lifetime)
     """
-    pass
+    weights = genome_to_weights(genome)
+    x = state_to_features(world.reset())
+    total_reward = 0.0
+
+    for _ in range(n_steps):
+        # Act
+        q_vals = predict_q_values(weights, x, ACTIONS)
+        a = choose_action(q_vals, ACTIONS, epsilon)
+        next_state, reward = world.step(a)
+        x_next = state_to_features(next_state)
+
+        # Target
+        if reward == 1:
+            target = reward
+        else:
+            next_q = predict_q_values(weights, x_next, ACTIONS)
+            target = reward + GAMMA * max(next_q.values())
+
+        # nudge this action's weights toward the target
+        weights[a] += alpha * (target - q_vals[a]) * x
+
+        total_reward += reward
+        x = x_next
+
+    return weights_to_genome(weights), total_reward
