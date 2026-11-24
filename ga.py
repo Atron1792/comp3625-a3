@@ -59,15 +59,24 @@ def select_parent(population: list, fitnesses: np.ndarray) -> np.ndarray:
 
         # Find the index of the participant with the highest fitness
         best_participant_idx = participant_indices[np.argmax(fitnesses[participant_indices])]
-        
+
         # Add the winning individual to the selected parents
         selected_parents.append(population[best_participant_idx])
     return selected_parents
 
 
-def crossover(parent_a: np.ndarray, parent_b: np.ndarray) -> np.ndarray:
-    """Uniform crossover: each gene comes from parent_a or parent_b with 50/50 chance."""
-    pass
+def crossover(parent_a: np.ndarray, parent_b: np.ndarray, swap_prob: float = 0.5, rng: np.random.Generator | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Uniform crossover: each gene swaps between parents with probability swap_prob."""
+    if parent_a.shape != parent_b.shape:
+        raise ValueError("Parents must have the same shape.")
+
+    rng = rng or np.random.default_rng()
+    swap_mask = rng.random(parent_a.shape) < swap_prob
+
+    offspring1 = np.where(swap_mask, parent_b, parent_a)
+    offspring2 = np.where(swap_mask, parent_a, parent_b)
+    return offspring1, offspring2
 
 
 def mutate(genome: np.ndarray) -> np.ndarray:
