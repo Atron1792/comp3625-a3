@@ -47,7 +47,26 @@ def evaluate(genome: np.ndarray, alpha: float, n_worlds: int = 1):
     
 def select_parent(population: list, fitnesses: np.ndarray) -> np.ndarray:
     """Tournament selection: sample TOURNAMENT_SIZE individuals, return the fittest's genome."""
-    pass
+    pop_size = len(population)
+    if num_parents is None:
+        num_parents = pop_size
+
+    selected_parents = []
+
+    for _ in range(num_parents):
+        # 1. Pick random indices for the tournament participants
+        participant_indices = np.random.choice(
+            pop_size, size=TOURNAMENT_SIZE, replace=False
+        )
+
+        # 2. Find the index of the participant with the highest fitness
+        best_participant_idx = participant_indices[
+            np.argmax(fitnesses[participant_indices])
+        ]
+
+        # 3. Add the winning individual to the selected parents
+        selected_parents.append(population[best_participant_idx])
+    return selected_parents
 
 
 def crossover(parent_a: np.ndarray, parent_b: np.ndarray) -> np.ndarray:
