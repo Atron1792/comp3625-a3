@@ -54,17 +54,13 @@ def select_parent(population: list, fitnesses: np.ndarray) -> np.ndarray:
     selected_parents = []
 
     for _ in range(num_parents):
-        # 1. Pick random indices for the tournament participants
-        participant_indices = np.random.choice(
-            pop_size, size=TOURNAMENT_SIZE, replace=False
-        )
+        # Pick random indices for the tournament participants
+        participant_indices = np.random.choice(pop_size, size=TOURNAMENT_SIZE, replace=False)
 
-        # 2. Find the index of the participant with the highest fitness
-        best_participant_idx = participant_indices[
-            np.argmax(fitnesses[participant_indices])
-        ]
-
-        # 3. Add the winning individual to the selected parents
+        # Find the index of the participant with the highest fitness
+        best_participant_idx = participant_indices[np.argmax(fitnesses[participant_indices])]
+        
+        # Add the winning individual to the selected parents
         selected_parents.append(population[best_participant_idx])
     return selected_parents
 
