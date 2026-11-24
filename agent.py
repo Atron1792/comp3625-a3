@@ -36,11 +36,15 @@ def choose_action(q_vals: dict, actions: list, epsilon: float) -> str:
 
 def feature_names() -> list:
     """
-    Names for the 13 feature columns, in the same order as state_to_features
-    ('bias', then the sorted sensory keys like 'hazard_right').
-    Used by analysis.py to label weights.
+    Names for the 13 feature columns, in the same order as state_to_features.
     """
-    pass
+    sensory_features = [
+        "wall_up", "wall_right", "wall_down", "wall_left",
+        "hazard_up", "hazard_right", "hazard_down", "hazard_left",
+        "goal_up", "goal_right", "goal_down", "goal_left"
+    ]
+
+    return ["bias"] + sorted(sensory_features)
 
 def genome_to_weights(genome: np.ndarray) -> dict:
     """Reshape a flat genome (GENOME_SIZE,) into {action: weight vector (N_FEATURES,)}."""
