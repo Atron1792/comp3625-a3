@@ -1,7 +1,6 @@
-import numpy as np
-
-from ga import evolve, ALPHA
 import analysis
+import numpy as np
+from ga import ALPHA, evolve
 
 
 def main(seed: int = 0, out_path: str = "logs.npz"):

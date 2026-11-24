@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def mean_learned_delta(log: dict, generations: slice) -> np.ndarray:

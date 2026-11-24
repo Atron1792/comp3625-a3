@@ -81,7 +81,15 @@ def crossover(parent_a: np.ndarray, parent_b: np.ndarray, swap_prob: float = 0.5
 
 def mutate(genome: np.ndarray) -> np.ndarray:
     """Add gaussian noise to each gene with probability MUTATION_RATE. Returns a new array."""
-    pass
+    # Create a boolean mask for genes that will mutate
+    mask = np.random.random(genome.shape) < MUTATION_RATE
+    
+    # Generate Gaussian noise with mean 0 and standard deviation MUTATION_STD
+    noise = np.random.normal(loc=0.0, scale=MUTATION_SIGMA, size=genome.shape)
+    
+    # Apply noise only where the mask is True
+    # Returns a new array automatically
+    return np.where(mask, genome + noise, genome)
 
 
 def evolve(alpha: float) -> dict:
